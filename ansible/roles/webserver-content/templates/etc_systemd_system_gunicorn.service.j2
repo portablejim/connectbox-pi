@@ -11,7 +11,7 @@ WorkingDirectory={{ connectbox_app_root }}
 Environment='GUNICORN_CMD_ARGS="--capture-output True"'
 ExecStart={{ connectbox_virtualenv }}/bin/gunicorn \
           --pid {{ gunicorn_pid_file }}  \
-          --bind 127.0.0.1:{{ gunicorn_listen_port }} main:app
+          --bind [::1]:{{ gunicorn_listen_port }} main:app
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
 PrivateTmp=true

@@ -11,7 +11,7 @@ allow-hotplug eth0
 iface eth0 inet dhcp
 
 allow-hotplug {{ client_facing_if }}
-iface {{ client_facing_if }} inet static
+iface {{ client_facing_if }} inet6 static
     address {{ client_facing_if_ip_address }}
     netmask {{ client_facing_if_netmask }}
     hostapd /etc/hostapd/hostapd.conf

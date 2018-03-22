@@ -12,9 +12,9 @@ client_facing_if: "wlan0"
 #  on the IP address for wlan0 that's defined in the network-interfaces role
 #  but network-interfaces needs dnsmasq to be installed (which is done by the
 #  dns-dhcp role)
-client_facing_if_ip_address: 10.129.0.1
-client_facing_if_netmask: 255.255.0.0
-client_facing_if_network_cidr: 10.129.0.0/16
+client_facing_if_ip_address: fdb1:b1e5::1
+client_facing_if_netmask: 64
+client_facing_if_network_cidr: fdb1:b1e5::/64
 
 # Used to serve dns on LAN in developer mode, principally for testing.
 # In situations where there are multiple wired ethernet interfaces, this is
@@ -78,7 +78,7 @@ nginx_chat_block: |
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header Host $http_host;
       proxy_redirect off;
-      proxy_pass http://127.0.0.1:{{ gunicorn_listen_port }}/chat;
+      proxy_pass http://[::1]:{{ gunicorn_listen_port }}/chat;
       # Never cache
       expires -1;
     }
@@ -90,7 +90,8 @@ do_image_preparation: False
 # Overriden in bootstrap role for non-developer mode
 iptables_ssh_in_interface: ""
 
-firewall_v4_group_rules:
+#firewall_v4_group_rules:
+firewall_v6_group_rules:
   150 redirect http:
     - -t nat -A PREROUTING -s {{ client_facing_if_network_cidr }} -p tcp --dport 80 -j DNAT --to {{ client_facing_if_ip_address }}:80
   # Overriding default - we only want ssh on the wired interface
